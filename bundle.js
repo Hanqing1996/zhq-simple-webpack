@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path=require('path')
 
-
+const path2ID={}
 
 function getFileContentByPath(filePath) {
     const fileContent=fs.readFileSync(filePath, 'utf-8');
@@ -23,12 +23,16 @@ let ID = 0;
 function createAsset(absolutePath) {
     
     const fileContent=getFileContentByPath(absolutePath)
-    return{
+    
+    const asset={
         path:absolutePath,
         id:ID++,
         code:(require)=>eval(`${fileContent}`),
         dependencies:getFileDependencies(fileContent)
     }
+    
+    path2ID[asset.path]=asset.id
+    return asset
 }
 
 
@@ -53,6 +57,9 @@ function createGraph(enterPath) {
 
 const queue=createGraph('./src/index.js')
 console.log(queue);
+
+
+
 
 
 
